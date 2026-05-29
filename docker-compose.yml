@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  cv-web:
+    build: .
+    container_name: cv-web
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    labels:
+      - "com.docker.compose.project=cv-web"

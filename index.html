@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xabier Díez Merino — CV</title>
+<meta name="description" content="CV interactivo de Xabier Díez Merino, Head of Informational Data Engineering & Governance.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1a2332}
+.header{background:#0d1117;color:#fff;padding:28px 36px 20px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(15,76,129,0.5) 0%,transparent 70%)}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;flex-wrap:wrap;gap:12px}
+.header-name h1{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1;color:#fff}
+.header-name .role{font-size:12px;font-weight:600;color:#7eb8f5;letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+.header-contact{text-align:right;font-size:11px;color:#94a9c4;line-height:1.9}
+.header-contact a{color:#7eb8f5;text-decoration:none}
+.header-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;position:relative;z-index:1}
+.htag{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.14);color:#c8d8ea;font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px}
+.map-wrap{position:relative;width:100%;background:#c8dba0;overflow:hidden}
+canvas{display:block;width:100%;cursor:pointer}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .3s;z-index:10}
+.overlay.show{opacity:1;pointer-events:all}
+.board{background:#1a1200;border:3px solid #c8a840;border-radius:8px;width:90%;max-width:500px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.75)}
+.bh{background:#c8a840;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.blogo{font-size:10px;font-weight:700;color:#1a1200;letter-spacing:1.5px}
+.bnum{background:#1a1200;color:#c8a840;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;font-family:monospace}
+.bcls{background:none;border:1.5px solid #1a1200;color:#1a1200;border-radius:4px;width:22px;height:22px;min-width:22px;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.bt2{background:#0a0800;padding:10px 12px 8px;border-bottom:1px solid #3a3000}
+.btitle{font-size:18px;font-weight:700;color:#f0d060;letter-spacing:1px;font-family:monospace}
+.bsub{font-size:10px;color:#8a7a40;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.bbody{background:#1a1200;padding:12px;max-height:320px;overflow-y:scroll;scrollbar-width:thin;scrollbar-color:#c8a840 #0a0800}
+.bbody::-webkit-scrollbar{width:5px}
+.bbody::-webkit-scrollbar-track{background:#0a0800}
+.bbody::-webkit-scrollbar-thumb{background:#c8a840;border-radius:3px}
+.bfoot{background:#0a0800;padding:5px 12px;border-top:1px solid #2a2000;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.blink{animation:bl 1.2s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0.2}}
+.st{font-size:10px;color:#c8a840;letter-spacing:1px;font-family:monospace}
+.row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tag{font-size:11px;padding:2px 8px;border-radius:3px;background:#2a2000;color:#c8a840;border:1px solid #4a3800;font-family:monospace}
+.tag.hi{background:#c8a840;color:#1a1200;font-weight:700}
+.slbl{font-size:9px;font-weight:700;color:#6a5820;letter-spacing:2px;text-transform:uppercase;margin:8px 0 4px;border-bottom:1px solid #2a2000;padding-bottom:3px}
+.iline{font-size:12px;color:#d4c080;line-height:1.7;font-family:monospace}
+.eblk{margin-bottom:8px;padding:7px;background:#0a0800;border:1px solid #2a2000;border-radius:4px}
+.eco{font-size:12px;font-weight:700;color:#f0d060;font-family:monospace}
+.erole{font-size:11px;color:#c8a840;margin-top:1px}
+.edate{font-size:10px;color:#6a5820}
+.eli{font-size:11px;color:#a09050;margin-top:3px;padding-left:10px;list-style:none}
+.eli li::before{content:"▸ ";color:#c8a840}
+.crow{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #2a2000;font-family:monospace}
+.crow:last-child{border-bottom:none}
+.cn{font-size:11px;color:#d4c080}
+.cy{font-size:11px;color:#c8a840;white-space:nowrap}
+.gt{font-size:9px;font-weight:700;color:#6a5820;text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px}
+.footer{background:#0d1117;color:#5a7a9a;text-align:center;padding:14px;font-size:11px}
+.footer a{color:#7eb8f5;text-decoration:none}
+@media(max-width:540px){
+  .header{padding:18px 16px 14px}
+  .header-name h1{font-size:22px}
+  .header-contact{display:none}
+  .btitle{font-size:15px}
+  .bbody{max-height:260px}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div class="header-name">
+      <h1>Xabier Díez Merino</h1>
+      <div class="role">Head of Informational Data Engineering &amp; Governance</div>
+    </div>
+    <div class="header-contact">
+      Vitoria-Gasteiz, España<br>
+      xdiezmerino@gmail.com · 635 759 019<br>
+      <a href="https://linkedin.com/in/xabier-diez-merino-99969429" target="_blank">linkedin.com/in/xabier-diez-merino</a>
+    </div>
+  </div>
+  <div class="header-tags">
+    <span class="htag">Stratio Advanced</span>
+    <span class="htag">CDMP Associate</span>
+    <span class="htag">AWS Certified</span>
+    <span class="htag">PSPO I</span>
+    <span class="htag">Data Spaces · IDSA</span>
+    <span class="htag">Microsoft Fabric</span>
+    <span class="htag">+15 años experiencia</span>
+    <span class="htag">Teletrabajo</span>
+  </div>
+</div>
+
+<div class="map-wrap" id="mapwrap">
+  <canvas id="c"></canvas>
+  <div class="overlay" id="ov">
+    <div class="board">
+      <div class="bh">
+        <span class="blogo">Línea XDM · CV Express</span>
+        <span class="bnum" id="bnum">EST. 01</span>
+        <button class="bcls" id="bcls" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="bt2">
+        <div class="btitle" id="btitle">PERFIL</div>
+        <div class="bsub" id="bsub">Vitoria-Gasteiz · Andén 1</div>
+      </div>
+      <div class="bbody" id="bbody"></div>
+      <div class="bfoot">
+        <span class="st blink">● EN ESTACIÓN</span>
+        <span class="st" id="bnext"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  CV interactivo de <strong style="color:#7eb8f5">Xabier Díez Merino</strong> &nbsp;·&nbsp;
+  <a href="mailto:xdiezmerino@gmail.com">xdiezmerino@gmail.com</a>
+</div>
+
+<script>
+const cvs=document.getElementById('c');
+const ctx=cvs.getContext('2d');
+const BASE_W=680,BASE_H=480;
+let scale=1;
+
+function resize(){
+  const cw=document.getElementById('mapwrap').clientWidth||680;
+  scale=cw/BASE_W;
+  cvs.width=BASE_W;cvs.height=BASE_H;
+  cvs.style.width=cw+'px';
+  cvs.style.height=Math.round(BASE_H*scale)+'px';
+  document.getElementById('mapwrap').style.height=Math.round(BASE_H*scale)+'px';
+}
+resize();
+window.addEventListener('resize',()=>{resize();});
+
+const ST=[
+  {id:'perfil',    label:'Perfil',          num:'01', sub:'Vitoria-Gasteiz · Andén 1', x:95,  y:270},
+  {id:'comp',      label:'Competencias',    num:'02', sub:'Zona Técnica · Andén 2',    x:220, y:165},
+  {id:'exp',       label:'Experiencia',     num:'03', sub:'Central · Andén 3',         x:380, y:100},
+  {id:'certs',     label:'Certificaciones', num:'04', sub:'Acreditaciones · Andén 4',  x:545, y:165},
+  {id:'form',      label:'Formación',       num:'05', sub:'Academia · Andén 5',        x:605, y:320},
+  {id:'contacto',  label:'Contacto',        num:'06', sub:'Terminal · Andén 6',        x:455, y:400},
+];
+
+const CONTENT={
+  perfil:`<div class="slbl">Quién soy</div><div class="iline">Consultor Senior del Dato. Head of Informational<br>Data Engineering &amp; Governance en Datu(a)/Teknei.<br>CDMP Associate · AWS Certified · IDSA Data Spaces.<br>Orientado a teletrabajo y proyectos de alto impacto.</div><div class="slbl">Contacto</div><div class="iline">Vitoria-Gasteiz, España<br>xdiezmerino@gmail.com · 635 759 019<br>linkedin.com/in/xabier-diez-merino-99969429</div><div class="slbl">Perfil</div><div class="row"><span class="tag hi">+15 años exp.</span><span class="tag hi">Teletrabajo</span><span class="tag">Data Governance</span><span class="tag">Arquitectura datos</span><span class="tag">Liderazgo técnico</span></div>`,
+  comp:`<div class="slbl">Stratio · avanzado</div><div class="row"><span class="tag hi">Governance</span><span class="tag hi">Engineer</span><span class="tag hi">Gen AI Fabric</span><span class="tag">Eroski</span><span class="tag">Ayto. Bilbao</span><span class="tag">ADIF</span><span class="tag">Consorcio Aguas</span></div><div class="slbl">Product Owner</div><div class="row"><span class="tag hi">PSPO I</span><span class="tag">Gestión backlog</span><span class="tag">Stakeholders</span><span class="tag">Scrum Master</span><span class="tag">Formación PO</span></div><div class="slbl">Gobierno del Dato</div><div class="row"><span class="tag hi">CDMP Associate</span><span class="tag">DataHub</span><span class="tag">OpenMetadata</span><span class="tag">Informatica CDGC</span><span class="tag">MDM SaaS</span><span class="tag">B360</span><span class="tag">Denodo</span><span class="tag">Anjana</span><span class="tag">MS Fabric</span></div><div class="slbl">Cloud AWS</div><div class="row"><span class="tag hi">AWS Certified</span><span class="tag">S3</span><span class="tag">Glue</span><span class="tag">Athena</span><span class="tag">DMS</span><span class="tag">MWAA</span><span class="tag">IoT Core</span><span class="tag">Kinesis</span><span class="tag">DynamoDB</span><span class="tag">OpenSearch</span><span class="tag">QuickSight</span><span class="tag">Terraform</span></div><div class="slbl">IoT</div><div class="row"><span class="tag hi">Fiware</span><span class="tag">Elliot IoT</span><span class="tag">AWS IoT Core</span><span class="tag">MQTT</span></div><div class="slbl">Big Data</div><div class="row"><span class="tag">Hadoop</span><span class="tag">Kafka</span><span class="tag">Flink</span><span class="tag">HBase</span><span class="tag">NiFi</span><span class="tag">Elastic Stack</span><span class="tag">Cloudera</span><span class="tag">Hortonworks</span></div><div class="slbl">Gestión &amp; Herramientas</div><div class="row"><span class="tag hi">Jira avanzado</span><span class="tag">Confluence</span><span class="tag">Data Spaces IDSA</span><span class="tag">Docker</span><span class="tag">Git</span><span class="tag">GitLab CI/CD</span><span class="tag">PowerBI</span></div>`,
+  exp:`<div class="eblk"><div class="eco">Datu(a) — Teknei</div><div class="erole">Head of Informational Data Engineering &amp; Governance</div><div class="edate">Nov 2021 – Actualidad</div><ul class="eli"><li>Responsable técnico Gobierno del Dato: catalogación, linaje y calidad (DataHub, OpenMetadata, Informatica, Stratio)</li><li>Proyectos Stratio: requisitos, análisis, desarrollo y gestión equipo en Eroski y Ayto. Bilbao. Gestión equipos Stratio en ADIF y Consorcio de Aguas</li><li>Preventa y estimación Banc Sabadell ~83.000 € · ~2.120 h</li><li>Plataforma AWS en EJIE: Data Lake medallion, ETL Glue, Step Functions, Airflow MWAA, IoT Core, Kinesis, Athena, QuickSight, PowerBI, DMS CDC, DynamoDB, OpenSearch, Terraform</li><li>Proyecto URA: series temporales (API REST Java, Angular, HBase, MQTT). Implantación Elliot IoT</li><li>Consultoría Gobierno del Dato para Lanbide: estrategia y modelo de gobernanza</li><li>Proyecto predictivo con Stratio para BilbaoTIK: Big Data, Business Intelligence</li><li>Evaluación stacks de gobernanza (MS Fabric, DataHub, OpenMetadata, Marquez, OpenLineage)</li><li>Gestión y liderazgo equipo 9-12 personas · Scrum Master</li></ul></div><div class="eblk"><div class="eco">Inetum — EJIE</div><div class="erole">Analista · Product Owner</div><div class="edate">Abr 2018 – Nov 2021</div><ul class="eli"><li>Infraestructuras horizontales de datos de EJIE</li><li>Platea Integración Big Data: Hadoop, Kafka, Flink, Elastic Stack, HBase. Tercer nivel</li><li>Big Data as a Service (BDaaS): modelado productos y catálogos, migraciones ML (Vivienda, Lanbide, URA). Product Owner</li><li>Migración BOPV de Interwoven a Hadoop</li><li>POC: ETL NiFi, Streamsets, ML Google Colab, herramientas gobierno del dato</li></ul></div><div class="eblk"><div class="eco">Entelgy-Ibai</div><div class="erole">Analista Funcional · Product Owner · Scrum Master</div><div class="edate">Jun 2015 – Abr 2018</div><ul class="eli"><li>PO Gestión del Cambio Ágil en Iberdrola: adopción metodologías ágiles, gestión backlog, ceremonias Scrum, formación interna en rol PO</li><li>Entrega en 6 meses sobre plazo original de 12</li><li>Scrum Master y analista Smart Solar para Iberdrola (Java, Angular, DB2)</li><li>Implantación Fiware IoT (Orion ContextBroker, Cygnus, IoT MQTT Agent) para Ikusi</li><li>Implantación Redmine para Lanbide e ERREPIDE</li></ul></div><div class="eblk"><div class="eco">Axpe Consulting</div><div class="erole">Analista Programador FatWire</div><div class="edate">Oct 2013 – Jun 2015</div><ul class="eli"><li>Gestión equipos y desarrollo para Departamento de Justicia del País Vasco (FatWire, J2EE, PHP, Oracle)</li></ul></div><div class="eblk"><div class="eco">Ibermática</div><div class="erole">Consultor ETL</div><div class="edate">Jun 2009 – May 2011</div><ul class="eli"><li>Consultor ETL ODI en proyecto Bilduz (Hacienda Foral de Álava): Data Warehouse con CDC Attunity, sincronismos batch/online, automatización ControlM</li></ul></div>`,
+  certs:`<div class="gt">Stratio</div><div class="crow"><span class="cn">Stratio Data Centric Governance</span><span class="cy">2022</span></div><div class="crow"><span class="cn">Stratio Data Centric Engineer</span><span class="cy">2022</span></div><div class="crow"><span class="cn">Stratio Generative AI Data Fabric</span><span class="cy">2023</span></div><div class="gt">Scrum &amp; Gestión</div><div class="crow"><span class="cn">PSPO I — Scrum.org</span><span class="cy">2021</span></div><div class="crow"><span class="cn">Lean IT · Agile PM · COBIT 5 — IAPMGI</span><span class="cy">2015</span></div><div class="gt">Plataformas de Datos</div><div class="crow"><span class="cn">CDMP Associate — DAMA International</span><span class="cy">2025</span></div><div class="crow"><span class="cn">IDSA Data Space Fundamentals (DS-PQP)</span><span class="cy">2025</span></div><div class="crow"><span class="cn">AWS Certified Cloud Practitioner</span><span class="cy">2023</span></div><div class="crow"><span class="cn">Informatica CDGC Foundation</span><span class="cy">2024</span></div><div class="crow"><span class="cn">Informatica MDM SaaS Foundation</span><span class="cy">2024</span></div><div class="crow"><span class="cn">Informatica B360 Foundation</span><span class="cy">2024</span></div><div class="crow"><span class="cn">Informatica Data Engineering Foundation</span><span class="cy">2024</span></div><div class="crow"><span class="cn">IBM Cloud Pak Data Governance</span><span class="cy">2024</span></div><div class="crow"><span class="cn">Anjana Data Fundamentals</span><span class="cy">2023</span></div><div class="crow"><span class="cn">Denodo Introduction &amp; Positioning</span><span class="cy">2026</span></div>`,
+  form:`<div class="eblk"><div class="eco">Ing. Superior en Informática de Sistemas</div><div class="erole">UPV/EHU — Fac. Informática de San Sebastián</div><div class="edate">2001 – 2008</div></div><div class="eblk"><div class="eco">Experto en Gobierno y Gestión Estratégica de Datos</div><div class="erole">Mondragon Unibertsitatea</div><div class="edate">Dic 2023 – Mar 2024</div></div><div class="slbl">Idiomas</div><div class="row"><span class="tag hi">Español — Nativo</span><span class="tag">Inglés — B2 FCE</span><span class="tag">Euskera — B1 HABE</span><span class="tag">Polaco — A2</span></div>`,
+  contacto:`<div class="slbl">Pasajero destacado</div><div class="iline">Xabier Díez Merino<br>Vitoria-Gasteiz, España<br>xdiezmerino@gmail.com<br>635 759 019<br>linkedin.com/in/xabier-diez-merino-99969429</div><div class="slbl">Disponibilidad</div><div class="row"><span class="tag hi">Teletrabajo</span><span class="tag hi">Senior / Head</span><span class="tag">Disponible 2025</span></div>`
+};
+
+let currentStIdx=0,targetStIdx=0,travelling=false;
+let routePath=[],routeProgress=0;
+let trainX=ST[0].x,trainY=ST[0].y;
+let facingRight=true;
+let smoke=[],lastT=0,pendingOpen=false;
+
+function buildRoute(from,to){
+  const path=[],step=from<to?1:-1;
+  for(let i=from;i!==to;i+=step)path.push({x:ST[i].x,y:ST[i].y});
+  path.push({x:ST[to].x,y:ST[to].y});
+  return path;
+}
+function routeLength(wps){let l=0;for(let i=1;i<wps.length;i++){const dx=wps[i].x-wps[i-1].x,dy=wps[i].y-wps[i-1].y;l+=Math.sqrt(dx*dx+dy*dy);}return l;}
+function posOnRoute(wps,d){
+  let rem=d;
+  for(let i=1;i<wps.length;i++){const dx=wps[i].x-wps[i-1].x,dy=wps[i].y-wps[i-1].y;const sl=Math.sqrt(dx*dx+dy*dy);if(rem<=sl){const t=rem/sl;return{x:wps[i-1].x+dx*t,y:wps[i-1].y+dy*t,dx,dy};}rem-=sl;}
+  const l=wps[wps.length-1],p=wps[wps.length-2];return{x:l.x,y:l.y,dx:l.x-p.x,dy:l.y-p.y};
+}
+
+function tree(x,y,r){
+  ctx.fillStyle='#3a6020';ctx.beginPath();ctx.arc(x,y-r*1.4,r,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#4a7a30';ctx.beginPath();ctx.arc(x,y-r*0.8,r*0.85,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#5a8a38';ctx.beginPath();ctx.arc(x,y-r*0.3,r*0.6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#6b4423';ctx.fillRect(x-r*0.18,y-r*0.2,r*0.36,r*0.5);
+}
+function house(x,y,w,h,rh,col){
+  ctx.fillStyle=col||'#e8d5b0';ctx.fillRect(x-w/2,y-h,w,h);
+  ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;ctx.strokeRect(x-w/2,y-h,w,h);
+  ctx.fillStyle='#b03020';ctx.beginPath();ctx.moveTo(x-w/2-3,y-h);ctx.lineTo(x,y-h-rh);ctx.lineTo(x+w/2+3,y-h);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#7a2010';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='rgba(140,190,230,0.7)';ctx.fillRect(x-w*0.15,y-h*0.55,w*0.28,h*0.28);
+}
+
+function drawStation(s,i){
+  const isActive=(i===currentStIdx&&!travelling);
+  const bx=s.x,by=s.y,bw=58,bh=38,rh=20;
+  ctx.shadowColor='rgba(0,0,0,0.2)';ctx.shadowBlur=5;ctx.shadowOffsetY=3;
+  ctx.fillStyle=isActive?'#f0e0b0':'#e8d8b0';ctx.fillRect(bx-bw/2,by-bh,bw,bh);
+  ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  ctx.strokeStyle='#5a4520';ctx.lineWidth=isActive?2:1;ctx.strokeRect(bx-bw/2,by-bh,bw,bh);
+  ctx.fillStyle='#5a3010';ctx.fillRect(bx-bw/2,by-bh,bw,5);
+  ctx.fillStyle=isActive?'#c0392b':'#8b2020';
+  ctx.beginPath();ctx.moveTo(bx-bw/2-4,by-bh);ctx.lineTo(bx,by-bh-rh);ctx.lineTo(bx+bw/2+4,by-bh);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#5a1010';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='rgba(140,200,240,0.72)';ctx.fillRect(bx-22,by-bh+8,16,11);ctx.fillRect(bx+6,by-bh+8,16,11);
+  ctx.fillStyle='#c8a060';ctx.strokeStyle='#8a6030';ctx.lineWidth=1;
+  ctx.fillRect(bx-5,by-20,10,20);ctx.strokeRect(bx-5,by-20,10,20);
+  ctx.fillStyle=isActive?'#ffdd00':'#e8ddc0';ctx.strokeStyle='#6a5010';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(bx,by-bh-rh+2,7,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.fillStyle=isActive?'#7a1000':'#2a1800';
+  ctx.font='bold 7px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(s.num,bx,by-bh-rh+2);
+  const lblAbove=by>310;const lblY=lblAbove?by-bh-rh-18:by+12;
+  ctx.font='600 10px sans-serif';const tw=ctx.measureText(s.label).width;
+  ctx.fillStyle='rgba(255,250,230,0.95)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
+  if(ctx.roundRect)ctx.roundRect(bx-tw/2-8,lblY-12,tw+16,16,4);else ctx.rect(bx-tw/2-8,lblY-12,tw+16,16);
+  ctx.fill();ctx.stroke();
+  ctx.fillStyle='#1a0800';ctx.textBaseline='alphabetic';ctx.fillText(s.label,bx,lblY);
+  if(isActive){ctx.strokeStyle='rgba(255,200,0,0.45)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(bx,by-bh/2,(bh*0.9)+Math.sin(Date.now()*0.004)*4,0,Math.PI*2);ctx.stroke();}
+}
+
+function drawTrain(tx,ty,goingRight){
+  ctx.save();ctx.translate(tx,ty);
+  if(!goingRight)ctx.scale(-1,1);
+  ctx.shadowColor='rgba(0,0,0,0.3)';ctx.shadowBlur=7;ctx.shadowOffsetY=3;
+  ctx.fillStyle='#1a2a5a';
+  if(ctx.roundRect)ctx.roundRect(-28,-14,56,24,5);else ctx.rect(-28,-14,56,24);
+  ctx.fill();
+  ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  ctx.fillStyle='#c0392b';
+  if(ctx.roundRect)ctx.roundRect(18,-14,10,24,{topRight:5,bottomRight:5,topLeft:0,bottomLeft:0});else ctx.rect(18,-14,10,24);
+  ctx.fill();
+  ctx.fillStyle='#2255a0';
+  if(ctx.roundRect)ctx.roundRect(-26,-13,38,22,3);else ctx.rect(-26,-13,38,22);
+  ctx.fill();
+  ctx.fillStyle='rgba(180,225,255,0.88)';ctx.fillRect(-22,-9,11,9);ctx.fillRect(-9,-9,8,9);
+  ctx.fillStyle='#ffdd00';ctx.beginPath();ctx.arc(24,0,3.5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,200,0.4)';ctx.beginPath();ctx.arc(24,0,6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#c8b060';ctx.strokeStyle='#6a5820';ctx.lineWidth=1.5;
+  [-18,-6,6,18].forEach(wx=>{
+    ctx.beginPath();ctx.arc(wx,13,5.5,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.strokeStyle='#e8d080';ctx.lineWidth=1;ctx.beginPath();ctx.arc(wx,13,2.5,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle='#6a5820';ctx.lineWidth=1.5;
+  });
+  ctx.restore();
+}
+
+function drawMap(){
+  const W=BASE_W,H=BASE_H;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#c8dba0';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#b8d090';
+  for(let x=0;x<W;x+=36){for(let y=0;y<H;y+=36){const v=Math.sin(x*0.06+y*0.08)*7;ctx.fillRect(x+v,y+v,34,34);}}
+  ctx.fillStyle='#7ab060';
+  [[55,345,62,22],[195,415,85,18],[575,78,52,20],[475,238,68,18],[118,118,48,16],[350,300,55,16]].forEach(([x,y,w,h])=>{ctx.beginPath();ctx.ellipse(x,y,w,h,0,0,Math.PI*2);ctx.fill();});
+  ctx.strokeStyle='#5a9ad0';ctx.lineWidth=6;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(0,388);ctx.bezierCurveTo(110,376,230,392,340,382);ctx.bezierCurveTo(460,372,540,386,680,380);ctx.stroke();
+  ctx.strokeStyle='#7ab8e8';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(0,390);ctx.bezierCurveTo(110,378,230,394,340,384);ctx.bezierCurveTo(460,374,540,388,680,382);ctx.stroke();
+  ctx.strokeStyle='#d4b87a';ctx.lineWidth=5;
+  ctx.beginPath();ctx.moveTo(0,195);ctx.lineTo(195,175);ctx.lineTo(410,192);ctx.lineTo(680,168);ctx.stroke();
+  ctx.strokeStyle='#ffffff';ctx.lineWidth=1;ctx.setLineDash([10,8]);
+  ctx.beginPath();ctx.moveTo(0,195);ctx.lineTo(195,175);ctx.lineTo(410,192);ctx.lineTo(680,168);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.strokeStyle='#b0a060';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(305,0);ctx.lineTo(295,200);ctx.lineTo(315,480);ctx.stroke();
+  [[158,148],[382,418],[492,128],[68,298],[598,248],[280,350],[430,60]].forEach(([x,y])=>tree(x,y,9+Math.sin(x*0.3)*2));
+  [[440,348],[538,88],[98,228],[648,158],[200,260]].forEach(([x,y])=>tree(x,y,7));
+  house(58,218,30,24,13,'#e8d5b0');house(338,448,24,20,11,'#ddd0b0');
+  house(618,128,26,22,12,'#e0d8c0');house(178,328,22,18,9,'#e8dcc0');house(498,298,20,16,9,'#ddd8c0');
+  ctx.fillStyle='rgba(255,255,255,0.6)';ctx.strokeStyle='#8a9ab0';ctx.lineWidth=0.5;
+  [[578,52,32,17],[98,406,22,11],[420,25,28,14]].forEach(([x,y,rx,ry])=>{
+    ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.ellipse(x-10,y+5,rx*0.65,ry*0.75,0,0,Math.PI*2);ctx.fill();
+  });
+  const pts=ST.map(s=>[s.x,s.y]);
+  ctx.shadowColor='rgba(0,0,0,0.25)';ctx.shadowBlur=4;ctx.shadowOffsetY=2;
+  ctx.strokeStyle='#2a1800';ctx.lineWidth=13;ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.stroke();
+  ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  ctx.strokeStyle='#4a3008';ctx.lineWidth=11;
+  ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.stroke();
+  ctx.strokeStyle='#7a6028';ctx.lineWidth=7;
+  ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);ctx.stroke();
+  ctx.strokeStyle='#c8a840';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pts[0][0]-3.5,pts[0][1]-3.5);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0]-3.5,pts[i][1]-3.5);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pts[0][0]+3.5,pts[0][1]+3.5);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0]+3.5,pts[i][1]+3.5);ctx.stroke();
+  for(let i=0;i<pts.length-1;i++){
+    const x1=pts[i][0],y1=pts[i][1],x2=pts[i+1][0],y2=pts[i+1][1];
+    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    const nx=-dy/len,ny=dx/len;const steps=Math.floor(len/15);
+    for(let s=1;s<steps;s++){
+      const t=s/steps,cx=x1+dx*t,cy=y1+dy*t;
+      ctx.strokeStyle='#4a3008';ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.moveTo(cx+nx*8,cy+ny*8);ctx.lineTo(cx-nx*8,cy-ny*8);ctx.stroke();
+    }
+  }
+  smoke.forEach(p=>{const age=p.age/p.maxAge;ctx.fillStyle=`rgba(210,210,210,${0.4*(1-age)})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(1+age*2.5),0,Math.PI*2);ctx.fill();});
+  ST.forEach((s,i)=>drawStation(s,i));
+  drawTrain(trainX,trainY,facingRight);
+  if(!document.getElementById('ov').classList.contains('show')&&!travelling){
+    ctx.fillStyle='rgba(255,248,220,0.9)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
+    if(ctx.roundRect)ctx.roundRect(BASE_W/2-150,BASE_H-32,300,22,8);else ctx.rect(BASE_W/2-150,BASE_H-32,300,22);
+    ctx.fill();ctx.stroke();
+    ctx.fillStyle='#3a2800';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.fillText('Haz clic en una estación para que el tren viaje hasta allí',BASE_W/2,BASE_H-17);
+  }
+}
+
+const SPEED=45;
+function animate(ts){
+  const dt=Math.min((ts-lastT)/1000,0.05);lastT=ts;
+  if(travelling&&routePath.length>0){
+    const totalLen=routeLength(routePath);
+    routeProgress=Math.min(routeProgress+SPEED*dt,totalLen);
+    const pos=posOnRoute(routePath,routeProgress);
+    trainX=pos.x;trainY=pos.y;
+    if(Math.abs(pos.dx)>1)facingRight=pos.dx>0;
+    if(Math.random()<0.3)smoke.push({x:trainX-(facingRight?1:-1)*28,y:trainY-18,r:5,age:0,maxAge:80});
+    if(routeProgress>=totalLen){
+      travelling=false;currentStIdx=targetStIdx;
+      trainX=ST[currentStIdx].x;trainY=ST[currentStIdx].y;
+      if(pendingOpen){pendingOpen=false;openBoard(currentStIdx);}
+    }
+  }
+  smoke.forEach(p=>{p.age++;p.x+=(Math.random()-0.5)*0.4;p.y-=0.4+Math.random()*0.3;});
+  smoke=smoke.filter(p=>p.age<p.maxAge);
+  drawMap();
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+function openBoard(idx){
+  const s=ST[idx];
+  document.getElementById('bnum').textContent='EST. '+s.num;
+  document.getElementById('btitle').textContent=s.label.toUpperCase();
+  document.getElementById('bsub').textContent=s.sub;
+  document.getElementById('bbody').innerHTML=CONTENT[s.id];
+  document.getElementById('bbody').scrollTop=0;
+  const next=ST[(idx+1)%ST.length];
+  document.getElementById('bnext').textContent='PRÓXIMA: '+next.label.toUpperCase();
+  document.getElementById('ov').classList.add('show');
+}
+
+cvs.addEventListener('click',e=>{
+  if(document.getElementById('ov').classList.contains('show'))return;
+  const rect=cvs.getBoundingClientRect();
+  const mx=(e.clientX-rect.left)/scale,my=(e.clientY-rect.top)/scale;
+  let clicked=-1;
+  ST.forEach((s,i)=>{const dx=mx-s.x,dy=my-s.y;if(Math.sqrt(dx*dx+dy*dy)<36)clicked=i;});
+  if(clicked<0||clicked===currentStIdx)return;
+  targetStIdx=clicked;routePath=buildRoute(currentStIdx,targetStIdx);routeProgress=0;travelling=true;pendingOpen=true;
+});
+
+document.getElementById('bcls').addEventListener('click',()=>{document.getElementById('ov').classList.remove('show');});
+</script>
+</body>
+</html>
