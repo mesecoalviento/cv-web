@@ -128,10 +128,10 @@ function resize(){
   const scaleW=cw/BASE_W;
   const scaleH=availH/BASE_H;
   scale=Math.min(scaleW, scaleH, 1);
+  // Si la pantalla es más alta, estiramos para llenarla
   const finalScale=Math.max(scaleW, scale);
   const ch=Math.round(BASE_H*finalScale);
-  cvs.width=BASE_W;
-  cvs.height=BASE_H;
+  cvs.width=BASE_W;cvs.height=BASE_H;
   cvs.style.width='100%';
   cvs.style.height=ch+'px';
   document.getElementById('mapwrap').style.height=ch+'px';
@@ -213,8 +213,6 @@ function drawStation(s,i){
   const lblAbove=by>310;const lblY=lblAbove?by-bh-rh-18:by+12;
   ctx.font='600 10px sans-serif';const tw=ctx.measureText(s.label).width;
   ctx.save();
-  ctx.globalAlpha=1;
-  ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
   ctx.fillStyle='rgba(255,250,230,0.95)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
   if(ctx.roundRect)ctx.roundRect(bx-tw/2-8,lblY-12,tw+16,16,4);else ctx.rect(bx-tw/2-8,lblY-12,tw+16,16);
   ctx.fill();ctx.stroke();
