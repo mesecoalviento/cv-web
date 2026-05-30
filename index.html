@@ -124,12 +124,18 @@ let scale=1;
 
 function resize(){
   const cw=document.getElementById('mapwrap').clientWidth||680;
-  scale=Math.min(1, cw/BASE_W);
-  const ch=Math.round(BASE_H*scale);
+  const availH=window.innerHeight - document.querySelector('.header').offsetHeight - document.querySelector('.footer').offsetHeight;
+  const scaleW=cw/BASE_W;
+  const scaleH=availH/BASE_H;
+  scale=Math.min(scaleW, scaleH, 1);
+  // Si la pantalla es más alta, estiramos para llenarla
+  const finalScale=Math.max(scaleW, scale);
+  const ch=Math.round(BASE_H*finalScale);
   cvs.width=BASE_W;cvs.height=BASE_H;
   cvs.style.width='100%';
   cvs.style.height=ch+'px';
   document.getElementById('mapwrap').style.height=ch+'px';
+  scale=finalScale;
 }
 resize();
 window.addEventListener('resize',()=>{resize();});
@@ -298,10 +304,10 @@ function drawMap(){
   if(!document.getElementById('ov').classList.contains('show')&&!travelling){
     ctx.save();
     ctx.fillStyle='rgba(255,248,220,0.9)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
-    if(ctx.roundRect)ctx.roundRect(BASE_W/2-150,BASE_H-32,300,22,8);else ctx.rect(BASE_W/2-150,BASE_H-32,300,22);
+    if(ctx.roundRect)ctx.roundRect(BASE_W/2-150,BASE_H-28,300,20,8);else ctx.rect(BASE_W/2-150,BASE_H-28,300,20);
     ctx.fill();ctx.stroke();
     ctx.fillStyle='#3a2800';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';
-    ctx.fillText('Haz clic en una estación para que el tren viaje hasta allí',BASE_W/2,BASE_H-17);
+    ctx.fillText('🚂  Haz clic en una estación para viajar',BASE_W/2,BASE_H-14);
     ctx.restore();
   }
 }
