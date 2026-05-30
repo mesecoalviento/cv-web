@@ -137,7 +137,6 @@ function resize(){
   cvs.style.width='100%';
   cvs.style.height=ch+'px';
   document.getElementById('mapwrap').style.height=ch+'px';
-  ctx.setTransform(dpr,0,0,dpr,0,0);
   scale=finalScale;
 }
 resize();
@@ -254,10 +253,8 @@ function drawTrain(tx,ty,goingRight){
 
 function drawMap(){
   const W=BASE_W,H=BASE_H;
-  ctx.save();
-  ctx.setTransform(1,0,0,1,0,0);
-  ctx.clearRect(0,0,cvs.width,cvs.height);
-  ctx.restore();
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
   ctx.fillStyle='#c8dba0';ctx.fillRect(0,0,W,H);
   ctx.fillStyle='#b8d090';
   for(let x=0;x<W;x+=36){for(let y=0;y<H;y+=36){const v=Math.sin(x*0.06+y*0.08)*7;ctx.fillRect(x+v,y+v,34,34);}}
