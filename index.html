@@ -122,9 +122,7 @@ const ctx=cvs.getContext('2d');
 const BASE_W=680,BASE_H=480;
 let scale=1;
 
-let dpr=1;
 function resize(){
-  dpr=window.devicePixelRatio||1;
   const cw=document.getElementById('mapwrap').clientWidth||680;
   const availH=window.innerHeight - document.querySelector('.header').offsetHeight - document.querySelector('.footer').offsetHeight;
   const scaleW=cw/BASE_W;
@@ -132,8 +130,8 @@ function resize(){
   scale=Math.min(scaleW, scaleH, 1);
   const finalScale=Math.max(scaleW, scale);
   const ch=Math.round(BASE_H*finalScale);
-  cvs.width=Math.round(BASE_W*dpr);
-  cvs.height=Math.round(BASE_H*dpr);
+  cvs.width=BASE_W;
+  cvs.height=BASE_H;
   cvs.style.width='100%';
   cvs.style.height=ch+'px';
   document.getElementById('mapwrap').style.height=ch+'px';
@@ -253,7 +251,6 @@ function drawTrain(tx,ty,goingRight){
 
 function drawMap(){
   const W=BASE_W,H=BASE_H;
-  ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,W,H);
   ctx.fillStyle='#c8dba0';ctx.fillRect(0,0,W,H);
   ctx.fillStyle='#b8d090';
