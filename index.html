@@ -124,11 +124,12 @@ let scale=1;
 
 function resize(){
   const cw=document.getElementById('mapwrap').clientWidth||680;
-  scale=cw/BASE_W;
+  scale=Math.min(1, cw/BASE_W);
+  const ch=Math.round(BASE_H*scale);
   cvs.width=BASE_W;cvs.height=BASE_H;
-  cvs.style.width=cw+'px';
-  cvs.style.height=Math.round(BASE_H*scale)+'px';
-  document.getElementById('mapwrap').style.height=Math.round(BASE_H*scale)+'px';
+  cvs.style.width='100%';
+  cvs.style.height=ch+'px';
+  document.getElementById('mapwrap').style.height=ch+'px';
 }
 resize();
 window.addEventListener('resize',()=>{resize();});
@@ -204,10 +205,12 @@ function drawStation(s,i){
   ctx.font='bold 7px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(s.num,bx,by-bh-rh+2);
   const lblAbove=by>310;const lblY=lblAbove?by-bh-rh-18:by+12;
   ctx.font='600 10px sans-serif';const tw=ctx.measureText(s.label).width;
+  ctx.save();
   ctx.fillStyle='rgba(255,250,230,0.95)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
   if(ctx.roundRect)ctx.roundRect(bx-tw/2-8,lblY-12,tw+16,16,4);else ctx.rect(bx-tw/2-8,lblY-12,tw+16,16);
   ctx.fill();ctx.stroke();
   ctx.fillStyle='#1a0800';ctx.textBaseline='alphabetic';ctx.fillText(s.label,bx,lblY);
+  ctx.restore();
   if(isActive){ctx.strokeStyle='rgba(255,200,0,0.45)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(bx,by-bh/2,(bh*0.9)+Math.sin(Date.now()*0.004)*4,0,Math.PI*2);ctx.stroke();}
 }
 
@@ -337,9 +340,10 @@ function openBoard(idx){
 cvs.addEventListener('click',e=>{
   if(document.getElementById('ov').classList.contains('show'))return;
   const rect=cvs.getBoundingClientRect();
-  const mx=(e.clientX-rect.left)/scale,my=(e.clientY-rect.top)/scale;
+  const scaleX=BASE_W/rect.width, scaleY=BASE_H/rect.height;
+  const mx=(e.clientX-rect.left)*scaleX, my=(e.clientY-rect.top)*scaleY;
   let clicked=-1;
-  ST.forEach((s,i)=>{const dx=mx-s.x,dy=my-s.y;if(Math.sqrt(dx*dx+dy*dy)<36)clicked=i;});
+  ST.forEach((s,i)=>{const dx=mx-s.x,dy=my-s.y;if(Math.sqrt(dx*dx+dy*dy)<42)clicked=i;});
   if(clicked<0||clicked===currentStIdx)return;
   targetStIdx=clicked;routePath=buildRoute(currentStIdx,targetStIdx);routeProgress=0;travelling=true;pendingOpen=true;
 });
