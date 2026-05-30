@@ -299,8 +299,8 @@ function drawMap(){
     }
   }
   smoke.forEach(p=>{const age=p.age/p.maxAge;ctx.fillStyle=`rgba(210,210,210,${0.4*(1-age)})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(1+age*2.5),0,Math.PI*2);ctx.fill();});
-  ST.forEach((s,i)=>drawStation(s,i));
   drawTrain(trainX,trainY,facingRight);
+  ST.forEach((s,i)=>drawStation(s,i));
   if(!document.getElementById('ov').classList.contains('show')&&!travelling){
     ctx.save();
     ctx.fillStyle='rgba(255,248,220,0.9)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
