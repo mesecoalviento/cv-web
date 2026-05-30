@@ -123,13 +123,22 @@ const BASE_W=680,BASE_H=480;
 let scale=1;
 
 function resize(){
+  const dpr=window.devicePixelRatio||1;
   const cw=document.getElementById('mapwrap').clientWidth||680;
-  scale=Math.min(1, cw/BASE_W);
-  const ch=Math.round(BASE_H*scale);
-  cvs.width=BASE_W;cvs.height=BASE_H;
+  const availH=window.innerHeight - document.querySelector('.header').offsetHeight - document.querySelector('.footer').offsetHeight;
+  const scaleW=cw/BASE_W;
+  const scaleH=availH/BASE_H;
+  scale=Math.min(scaleW, scaleH, 1);
+  const finalScale=Math.max(scaleW, scale);
+  const ch=Math.round(BASE_H*finalScale);
+  // Canvas interno a resolución DPR para nitidez en Retina y móviles
+  cvs.width=Math.round(BASE_W*dpr);
+  cvs.height=Math.round(BASE_H*dpr);
   cvs.style.width='100%';
   cvs.style.height=ch+'px';
   document.getElementById('mapwrap').style.height=ch+'px';
+  ctx.scale(dpr,dpr);
+  scale=finalScale;
 }
 resize();
 window.addEventListener('resize',()=>{resize();});
@@ -186,6 +195,7 @@ function house(x,y,w,h,rh,col){
 }
 
 function drawStation(s,i){
+  ctx.save();
   const isActive=(i===currentStIdx&&!travelling);
   const bx=s.x,by=s.y,bw=58,bh=38,rh=20;
   ctx.shadowColor='rgba(0,0,0,0.2)';ctx.shadowBlur=5;ctx.shadowOffsetY=3;
@@ -206,6 +216,8 @@ function drawStation(s,i){
   const lblAbove=by>310;const lblY=lblAbove?by-bh-rh-18:by+12;
   ctx.font='600 10px sans-serif';const tw=ctx.measureText(s.label).width;
   ctx.save();
+  ctx.globalAlpha=1;
+  ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
   ctx.fillStyle='rgba(255,250,230,0.95)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
   if(ctx.roundRect)ctx.roundRect(bx-tw/2-8,lblY-12,tw+16,16,4);else ctx.rect(bx-tw/2-8,lblY-12,tw+16,16);
   ctx.fill();ctx.stroke();
@@ -291,14 +303,16 @@ function drawMap(){
     }
   }
   smoke.forEach(p=>{const age=p.age/p.maxAge;ctx.fillStyle=`rgba(210,210,210,${0.4*(1-age)})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(1+age*2.5),0,Math.PI*2);ctx.fill();});
-  ST.forEach((s,i)=>drawStation(s,i));
   drawTrain(trainX,trainY,facingRight);
+  ST.forEach((s,i)=>drawStation(s,i));
   if(!document.getElementById('ov').classList.contains('show')&&!travelling){
+    ctx.save();
     ctx.fillStyle='rgba(255,248,220,0.9)';ctx.strokeStyle='#8a7a50';ctx.lineWidth=1;
-    if(ctx.roundRect)ctx.roundRect(BASE_W/2-150,BASE_H-32,300,22,8);else ctx.rect(BASE_W/2-150,BASE_H-32,300,22);
+    if(ctx.roundRect)ctx.roundRect(BASE_W/2-150,BASE_H-28,300,20,8);else ctx.rect(BASE_W/2-150,BASE_H-28,300,20);
     ctx.fill();ctx.stroke();
     ctx.fillStyle='#3a2800';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';
-    ctx.fillText('Haz clic en una estación para que el tren viaje hasta allí',BASE_W/2,BASE_H-17);
+    ctx.fillText('🚂  Haz clic en una estación para viajar',BASE_W/2,BASE_H-14);
+    ctx.restore();
   }
 }
 
