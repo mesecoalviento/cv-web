@@ -221,6 +221,7 @@ function drawStation(s,i){
   ctx.fillStyle='#1a0800';ctx.textBaseline='alphabetic';ctx.fillText(s.label,bx,lblY);
   ctx.restore();
   if(isActive){ctx.strokeStyle='rgba(255,200,0,0.45)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(bx,by-bh/2,(bh*0.9)+Math.sin(Date.now()*0.004)*4,0,Math.PI*2);ctx.stroke();}
+  ctx.restore();
 }
 
 function drawTrain(tx,ty,goingRight){
